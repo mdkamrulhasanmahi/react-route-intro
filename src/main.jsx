@@ -11,8 +11,12 @@ import Laftop from "./components/Laftop/Laftop.jsx";
 import Users from "./components/Users/Users.jsx";
 import Users2 from "./components/Users2/Users2.jsx";
 import Userdut from "./components/UsersDut/Userdut.jsx";
+import Posts from "./components/Posts/Posts.jsx";
+import PostDut from "./components/PostDut/PostDut.jsx";
 
-const usepromuse= fetch("https://jsonplaceholder.typicode.com/users").then(res=>res.json());
+const usepromuse = fetch("https://jsonplaceholder.typicode.com/users").then(
+  (res) => res.json()
+);
 
 const router = createBrowserRouter([
   {
@@ -33,16 +37,32 @@ const router = createBrowserRouter([
 
       {
         path: "Users2",
-        element: <Suspense fallback={<span>...lode</span>}>
-      <Users2 usepromuse={usepromuse}></Users2>
-        </Suspense>
-        
+        element: (
+          <Suspense fallback={<span>...lode</span>}>
+            <Users2 usepromuse={usepromuse}></Users2>
+          </Suspense>
+        ),
       },
 
       {
         path: "Users/:UserId",
-        Component: Userdut
-      }
+        loader: ({ params }) =>
+          fetch(`https://jsonplaceholder.typicode.com/users/${params.UserId}`),
+        Component: Userdut,
+      },
+
+      {
+        path: "posts",
+        loader: () => fetch("https://jsonplaceholder.typicode.com/posts"),
+        Component: Posts,
+      },
+
+      {
+        path: "Posts/:PostId",
+        loader: ({ params }) =>
+          fetch(`https://jsonplaceholder.typicode.com/posts/${params.PostId}`),
+        Component: PostDut,
+      },
     ],
   },
   {
@@ -56,6 +76,11 @@ const router = createBrowserRouter([
   {
     path: "app2",
     Component: App,
+  },
+
+  {
+    path: "*",
+    Component: <h2>Not Found : 404 In The Page</h2>,
   },
 ]);
 
